@@ -73,8 +73,10 @@ pipeline {
         stage("Sonarqube Analysis") {
             steps {
                 withSonarQubeEnv('sonar-server') {
-                    sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Netflix \
-                    -Dsonar.projectKey=Netflix'''
+                    sh '''
+                    $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Netflix \
+                    -Dsonar.projectKey=Netflix
+                    '''
                 }
             }
         }
@@ -88,33 +90,32 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh "trivy fs . > trivyfs.txt" 
-                    }catch(Exception e){
-                        input(message: "Are you sure to proceed?", ok: "Proceed")
+                        sh "trivy fs . > trivyfs.txt"
+                    } catch (Exception e) {
+                        input(message: "An error occurred during TRIVY FS scan. Proceed?", ok: "Proceed")
                     }
                 }
             }
         }
-        stage("Docker Build Image"){
-            steps{
-                   
+        stage("Docker Build Image") {
+            steps {
                 sh "docker build --build-arg API_KEY=2af0904de8242d48e8527eeedc3e19d9 -t netflix ."
             }
         }
-        stage("TRIVY"){
-            steps{
+        stage("TRIVY") {
+            steps {
                 sh "trivy image netflix > trivyimage.txt"
-                script{
-                    input(message: "Are you sure to proceed?", ok: "Proceed")
+                script {
+                    input(message: "Proceed with image analysis?", ok: "Proceed")
                 }
             }
         }
-        stage("Docker Push"){
-            steps{
+        stage("Docker Push") {
+            steps {
                 script {
-                    withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker'){   
-                    sh "docker tag netflix prashantshukla001/netflix:latest "
-                    sh "docker push prashantshukla001/netflix:latest"
+                    withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                        sh "docker tag netflix prashantshukla001/netflix:latest"
+                        sh "docker push prashantshukla001/netflix:latest"
                     }
                 }
             }
