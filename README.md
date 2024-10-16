@@ -163,13 +163,13 @@ helm install stable prometheus-community/kube-prometheus-stack -n prometheus
 5. Edit the service and make it LoadBalancer
 
 ```
-kubectl edit svc stable-kube-prometheus-sta-prometheus -n prometheus
+kubectl edit svc kube-prometheus-stack-prometheus -n prometheus
 ```
 
 6. Edit the grafana service too to change it to LoadBalancer
 
 ```
-kubectl edit svc stable-grafana -n prometheus
+kubectl edit svc kube-prometheus-stack-grafana -n prometheus
 ```
 
 ## Step 9: Deploy ArgoCD on EKS to fetch the manifest files to the cluster
