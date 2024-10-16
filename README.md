@@ -67,7 +67,7 @@ pipeline {
         }
         stage('Checkout from Git') {
             steps {
-                git branch: 'main', url: 'https://github.com/gauri17-pro/nextflix.git'
+                git branch: 'main', url: 'https://github.com/PrashantShukla001/nextflix.git'
             }
         }
         stage("Sonarqube Analysis") {
